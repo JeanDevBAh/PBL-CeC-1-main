@@ -1,0 +1,43 @@
+package model;
+
+public enum Cidades {
+    VALENTINE("Valentine", true),
+    RHODES("Rhodes", true),
+    SAINT_DENIS("Saint Denis", true),
+    STRAWBERRY("Strawberry", true),
+    BLACKWATER("Blackwater", true),
+    ANESBURG("Anesburg", true),
+    VANHORN("Vanhorn", true),
+    EMERALD_RANCH("Emerald Ranch", true),
+    CORNWALL_KEROSENE("Cornwall Kerosene", true),
+    BUTCHER_CREEK("Butcher Creek", true),
+    LAGRAS("Lagas", true),
+    BRAITHWAITE("Braithwaite", true),
+    CALLIGA_HALL("Calliga Hall", true),
+    MANZANITA_POST("Manzanita Post", true),
+    COLTER("Colter", true),
+    WAPITI("Wapiti", true),
+    ARMADILLO("Armadillo", true),
+    TUMBLEWEED("Tumbleweed", true),
+    MACFARLANES_RANCH("Macfarlanes Ranch", true),
+    THIEVES_LANDING("Thieves Landing", true),
+    PLAINVIEW("Plainview", true),
+    TAHITI("Tahiti", false);
+
+    private final String nome;
+    private final boolean disponivel;
+
+    Cidades(String nome, boolean disponivel) {
+        this.nome = nome;
+        this.disponivel = disponivel;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public boolean isDisponivel() {
+        return disponivel;
+    }
+    
+}
