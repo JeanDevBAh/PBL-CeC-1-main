@@ -11,9 +11,9 @@ public enum Cidades {
     EMERALD_RANCH("Emerald Ranch", true),
     CORNWALL_KEROSENE("Cornwall Kerosene", true),
     BUTCHER_CREEK("Butcher Creek", true),
-    LAGRAS("Lagas", true),
+    LAGRAS("Lagras", true),
     BRAITHWAITE("Braithwaite", true),
-    CALLIGA_HALL("Calliga Hall", true),
+    CALIGA_HALL("Caliga Hall", true),
     MANZANITA_POST("Manzanita Post", true),
     COLTER("Colter", true),
     WAPITI("Wapiti", true),
@@ -38,6 +38,10 @@ public enum Cidades {
 
     public boolean isDisponivel() {
         return disponivel;
+    }
+    @Override
+    public String toString() {
+        return nome;
     }
     
 }
