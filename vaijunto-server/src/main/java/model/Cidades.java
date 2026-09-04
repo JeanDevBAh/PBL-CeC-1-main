@@ -1,5 +1,9 @@
 package model;
 
+/**
+ * Enum das cidades disponiveis que serão vertices do grafo a ser criado
+ * O tahiti é proibido de ser acessado 
+ */
 public enum Cidades {//cidades baseadas no jogo RDR2
     VALENTINE("Valentine", true),
     RHODES("Rhodes", true),
