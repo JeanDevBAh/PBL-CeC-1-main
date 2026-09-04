@@ -6,17 +6,17 @@ import java.util.UUID;
 
 public class Carona {
     private String id;
+    private String motorista;
     private List<Cidades> rota;
     private List<Trecho> trechos;
     private String data;
     private String hora;
     private int vagasTotais;
-    private String nomeMotorista;
     private boolean ativaOuNao;
     private List<Double> precoPorTrecho;
 
     public Carona(List<Cidades> rota, String data, String hora, 
-                  int vagasTotais, String nomeMotorista, boolean ativaOuNao, List<Double> precos) {
+                  int vagasTotais, boolean ativaOuNao, List<Double> precos, String motorista) {
         
         if (rota == null || rota.size() < 2) {
             throw new IllegalArgumentException("A rota tem que ter pelo menos 2 cidades");
@@ -31,8 +31,8 @@ public class Carona {
         this.trechos = gerarTrechos(this.rota, this.precoPorTrecho, vagasTotais, data);
         this.data = data;
         this.hora = hora;
+        this.motorista = motorista;
         this.vagasTotais = vagasTotais;
-        this.nomeMotorista = nomeMotorista;
         this.ativaOuNao = ativaOuNao;
     }
 
@@ -43,7 +43,7 @@ public class Carona {
             Cidades destino = rotaCidades.get(i + 1);
             double precoDoTrecho = precos.get(i);
 
-            lista.add(new Trecho(this.id, data, origem, destino, vagas, precoDoTrecho));
+            lista.add(new Trecho(this.id, data, origem, destino, vagas, precoDoTrecho, this.motorista));
         }
         return lista;
     }
@@ -85,10 +85,10 @@ public class Carona {
         this.vagasTotais = vagasTotais;
     }
     public String getNomeMotorista() {
-        return nomeMotorista;
+        return motorista;
     }
     public void setNomeMotorista(String nomeMotorista) {
-        this.nomeMotorista = nomeMotorista;
+        this.motorista = nomeMotorista;
     }
     public boolean isAtivaOuNao() {
         return ativaOuNao;

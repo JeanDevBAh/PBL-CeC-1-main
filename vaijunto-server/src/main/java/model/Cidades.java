@@ -1,6 +1,6 @@
 package model;
 
-public enum Cidades {
+public enum Cidades {//cidades baseadas no jogo RDR2
     VALENTINE("Valentine", true),
     RHODES("Rhodes", true),
     SAINT_DENIS("Saint Denis", true),

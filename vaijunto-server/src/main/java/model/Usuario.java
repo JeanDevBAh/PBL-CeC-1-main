@@ -4,22 +4,22 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class Usuario {
+
     private String login;
     private String senha;
     private String id;
     private String nome;
     private TipoUser tipoUser;
 
-    public Usuario(String login, String senha, String id, String nome, TipoUser tipoUser) {
+    public Usuario(String login, String senha, String id, TipoUser tipoUser) {
         this.login = login;
         this.senha = senha;
         this.id = id;
-        this.nome = nome;
         this.tipoUser = tipoUser;
     }
 
     public Usuario(String login, String senha, TipoUser tipo) {
-        this(login, senha, UUID.randomUUID().toString(), login, tipo);
+        this(login, senha, UUID.randomUUID().toString(), tipo);
     }
 
     public boolean validarSenha( String senhaInformada){
@@ -44,6 +44,9 @@ public class Usuario {
 
     public TipoUser getTipoUser() {
         return tipoUser;
+    }
+    public void setTipoUser(TipoUser tipoUser) {
+        this.tipoUser = tipoUser;
     }
 
     @Override

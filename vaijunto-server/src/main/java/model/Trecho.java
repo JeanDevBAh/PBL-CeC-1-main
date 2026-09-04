@@ -7,18 +7,21 @@ public class Trecho {
     private String data;
     private Cidades cidadeOrigem;
     private Cidades cidadeDestino;
+    private String motorista;
     private final int totalLugares;
     private int lugaresDisponiveis;
     private double preco;
 
     // Construtor compatível com a chamada em Carona.java
-    public Trecho(String caronaId, String data, Cidades cidadeOrigem, Cidades cidadeDestino, int totalLugares, double preco) {
+    public Trecho(String caronaId, String data, Cidades cidadeOrigem, Cidades cidadeDestino,
+         int totalLugares, double preco, String motorista) {
         this.caronaId = caronaId;
         this.data = data;
         this.cidadeOrigem = cidadeOrigem;
         this.cidadeDestino = cidadeDestino;
         this.totalLugares = totalLugares;
         this.lugaresDisponiveis = totalLugares;
+        this.motorista = motorista;
         this.preco = preco;
     }
 
@@ -89,7 +92,14 @@ public class Trecho {
     public void setPreco(double preco) {
         this.preco = preco;
     }
+    public String getMotorista() {
+        return motorista;
+    }
 
+    public void setMotorista(String motorista) {
+        this.motorista = motorista;
+    }
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
