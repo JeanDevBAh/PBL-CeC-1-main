@@ -35,9 +35,7 @@ public class Reserva {
         if (this.ativa) {
             this.ativa = false;
             for (Trecho t : this.trechos) {
-                t.liberarLugar();
-                // O trecho remove o passageiro usando o login salvo na Reserva
-                t.removerPassageiro(this.loginPassageiro); 
+                t.liberarLugar(loginPassageiro);
             }
         }
     }

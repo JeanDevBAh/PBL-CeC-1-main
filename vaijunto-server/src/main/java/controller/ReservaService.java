@@ -41,9 +41,7 @@ public class ReservaService {
         
         // 2. Fase de Confirmação: Efetiva a reserva com segurança
         for(Trecho trecho : trechos){
-            trecho.reservarLugar();
-            // Correção: Adiciona o passageiro à lista do trecho
-            trecho.setPassageiros(passageiro); 
+            trecho.reservarLugar(passageiro);
         }
         
         Reserva reserva = new Reserva(passageiro.getId(), passageiro.getLogin(), trechos);
