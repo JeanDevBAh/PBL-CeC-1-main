@@ -6,7 +6,7 @@ import java.util.UUID;
 public class Usuario {
 
     private String login;
-    private String senha;
+    private transient String senha;
     private String id;
     private String nome;
     private TipoUser tipoUser;

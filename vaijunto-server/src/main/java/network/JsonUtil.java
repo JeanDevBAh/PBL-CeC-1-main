@@ -1,6 +1,7 @@
 package network;
 
 import com.google.gson.Gson;
+import java.lang.reflect.Type;
 
 public class JsonUtil {
     private static final Gson gson = new Gson();
@@ -9,7 +10,13 @@ public class JsonUtil {
         return gson.toJson(objeto);
     }
 
+    // Mantém o original para objetos simples
     public static <T> T paraObject(String json, Class<T> classe){
         return gson.fromJson(json, classe);
+    }
+
+    // NOVO: Permite desserializar tipos complexos, como DTOResponse<List<Itinerario>>
+    public static <T> T paraObjectComplexo(String json, Type tipoComplexo){
+        return gson.fromJson(json, tipoComplexo);
     }
 }

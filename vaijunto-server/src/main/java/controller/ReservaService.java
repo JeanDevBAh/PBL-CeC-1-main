@@ -1,6 +1,6 @@
 package controller;
 
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,23 +27,30 @@ public class ReservaService {
     }
 
     public String efetuarReserva(Usuario passageiro, Itinerario viagem){
-        List<Trecho> trechos = viagem.getTrechos();
-        List<Trecho> reservados = new ArrayList<>();
-
+    List<Trecho> trechos = viagem.getTrechos();
+    
+    // Sincroniza o processo de reserva para evitar que outra thread roube a vaga
+    // entre a checagem e a confirmação.
+    synchronized (this) {
+        // 1. Fase de Validação: Checa todos os trechos primeiro
         for(Trecho trecho : trechos){
-            if (trecho.reservarLugar()) {
-                reservados.add(trecho);
-            }else{
-                for(Trecho liberar: reservados){
-                    liberar.liberarLugar();
-                }
-                return null;
+            if (trecho.getLugaresDisponiveis() <= 0) {
+                return null; // Falha atômica: rejeita antes de alterar qualquer vaga
             }
         }
+        
+        // 2. Fase de Confirmação: Efetiva a reserva com segurança
+        for(Trecho trecho : trechos){
+            trecho.reservarLugar();
+            // Correção: Adiciona o passageiro à lista do trecho
+            trecho.setPassageiros(passageiro); 
+        }
+        
         Reserva reserva = new Reserva(passageiro.getId(), passageiro.getLogin(), trechos);
         reservas.put(reserva.getId(), reserva);
         return reserva.getId();
     }
+}
 
     public boolean cancelarReserva(String idReserva, String login){
         Reserva reserva = reservas.get(idReserva);

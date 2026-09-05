@@ -29,7 +29,7 @@ public class Grafo {
     }
 
     //retorna a lista de itinerarios disponiveis para o cliente
-    public synchronized List<Itinerario> buscarItinerarios(Cidades origem, Cidades destino, String dataDesejada) {
+    public List<Itinerario> buscarItinerarios(Cidades origem, Cidades destino, String dataDesejada) {
         List<Itinerario> resultado = new ArrayList<>();
 
         // Validações de entrada: nulos, origem == destino e cidades bloqueadas (ex: Tahiti)

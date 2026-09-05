@@ -31,11 +31,13 @@ public class Reserva {
     }
 
     // Libera os assentos ocupados caso o passageiro cancele a reserva
-    public synchronized void cancelar() {
+  public synchronized void cancelar() {
         if (this.ativa) {
             this.ativa = false;
             for (Trecho t : this.trechos) {
                 t.liberarLugar();
+                // O trecho remove o passageiro usando o login salvo na Reserva
+                t.removerPassageiro(this.loginPassageiro); 
             }
         }
     }

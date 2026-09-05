@@ -14,6 +14,7 @@ public class Carona {
     private int vagasTotais;
     private boolean ativaOuNao;
     private List<Double> precoPorTrecho;
+  
 
     /** 
      * Classe carona é o objeto que o motorista vai gerar e disponibilizar para
@@ -28,6 +29,7 @@ public class Carona {
         if (precos == null || precos.size() != (rota.size() - 1)) {
             throw new IllegalArgumentException("Quantidade de preços incompatível com a rota");
         }
+        
 
         this.id = UUID.randomUUID().toString();
         this.rota = new ArrayList<>(rota);
@@ -109,4 +111,14 @@ public class Carona {
     public void setPrecoPorTrecho(List<Double> precoPorTrecho) {
         this.precoPorTrecho = precoPorTrecho;
     }
+
+    public String getMotorista() {
+        return motorista;
+    }
+
+    public void setMotorista(String motorista) {
+        this.motorista = motorista;
+    }
+
+
 }

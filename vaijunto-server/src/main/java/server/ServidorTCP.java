@@ -4,13 +4,18 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import controller.GegenciarGeral;
+
 public class ServidorTCP {
     
     // Porta onde o servidor vai escutar as conexões (você pode alterar se precisar)
     private static final int PORTA = 8080;
+    
 
     public static void main(String[] args) {
         System.out.println("[SERVER] Iniciando o Servidor VaiJunto...");
+
+        GegenciarGeral gerenciador = new GegenciarGeral();
 
         // Abre o ServerSocket na porta definida
         try (ServerSocket serverSocket = new ServerSocket(PORTA)) {
@@ -23,7 +28,7 @@ public class ServidorTCP {
                 System.out.println("[SERVER] Novo passageiro/motorista conectado: " + socketCliente.getRemoteSocketAddress());
 
                 // Cria uma nova thread (ClientHandler) para cuidar exclusivamente deste cliente
-                ClientHandler handler = new ClientHandler(socketCliente);
+                ClientHandler handler = new ClientHandler(socketCliente, gerenciador);
                 new Thread(handler).start();
             }
 

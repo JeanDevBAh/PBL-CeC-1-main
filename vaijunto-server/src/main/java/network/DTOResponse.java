@@ -1,10 +1,10 @@
 package network;
 
-public class DTOResponse {
+public class DTOResponse<T> {
     
     private boolean sucesso;
     private String mensagem;
-    private Object dados; // Pode guardar uma lista de itinerários, uma reserva, etc.
+    private T dados; // Pode guardar uma lista de itinerários, uma reserva, etc.
 
     // Construtor para respostas simples (sucesso/erro + texto)
     public DTOResponse(boolean sucesso, String mensagem) {
@@ -14,7 +14,7 @@ public class DTOResponse {
     }
 
     // Construtor para respostas com dados complexos
-    public DTOResponse(boolean sucesso, String mensagem, Object dados) {
+    public DTOResponse(boolean sucesso, String mensagem, T dados) {
         this.sucesso = sucesso;
         this.mensagem = mensagem;
         this.dados = dados;
@@ -37,11 +37,11 @@ public class DTOResponse {
         this.mensagem = mensagem;
     }
 
-    public Object getDados() {
+    public T getDados() {
         return dados;
     }
 
-    public void setDados(Object dados) {
+    public void setDados(T dados) {
         this.dados = dados;
     }
 }
