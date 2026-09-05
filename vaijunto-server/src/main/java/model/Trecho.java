@@ -1,5 +1,7 @@
 package model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Trecho {
@@ -11,8 +13,8 @@ public class Trecho {
     private final int totalLugares;
     private int lugaresDisponiveis;
     private double preco;
+    private List<Usuario> passageiros;
 
-    // Construtor compatível com a chamada em Carona.java
     public Trecho(String caronaId, String data, Cidades cidadeOrigem, Cidades cidadeDestino,
          int totalLugares, double preco, String motorista) {
         this.caronaId = caronaId;
@@ -23,24 +25,26 @@ public class Trecho {
         this.lugaresDisponiveis = totalLugares;
         this.motorista = motorista;
         this.preco = preco;
+        this.passageiros = new ArrayList<>();
     }
 
-    // Controle atômico com exclusão mútua
-    public synchronized boolean reservarLugar() {
+    public synchronized boolean reservarLugar(Usuario passageiro) {
         if (this.lugaresDisponiveis > 0) {
             this.lugaresDisponiveis--;
+            this.passageiros.add(passageiro);
             return true;
         }
         return false;
     }
 
-    public synchronized void liberarLugar() {
+    // CORREÇÃO: idem, libera a vaga e remove o passageiro atomicamente.
+    public synchronized void liberarLugar(String loginPassageiro) {
         if (this.lugaresDisponiveis < this.totalLugares) {
             this.lugaresDisponiveis++;
         }
+        this.passageiros.removeIf(usuario -> usuario.getLogin().equals(loginPassageiro));
     }
 
-    // Getters e Setters
     public String getCaronaId() {
         return caronaId;
     }
@@ -92,6 +96,7 @@ public class Trecho {
     public void setPreco(double preco) {
         this.preco = preco;
     }
+
     public String getMotorista() {
         return motorista;
     }
@@ -99,7 +104,11 @@ public class Trecho {
     public void setMotorista(String motorista) {
         this.motorista = motorista;
     }
-    
+
+    public synchronized List<Usuario> getPassageiros() {
+        return new ArrayList<>(passageiros);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

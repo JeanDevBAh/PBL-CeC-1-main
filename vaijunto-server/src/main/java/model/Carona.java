@@ -2,7 +2,7 @@ package model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+import java.util.UUID;//gera ID randomico
 
 public class Carona {
     private String id;
@@ -14,7 +14,12 @@ public class Carona {
     private int vagasTotais;
     private boolean ativaOuNao;
     private List<Double> precoPorTrecho;
+  
 
+    /** 
+     * Classe carona é o objeto que o motorista vai gerar e disponibilizar para
+     * os clientes
+    */
     public Carona(List<Cidades> rota, String data, String hora, 
                   int vagasTotais, boolean ativaOuNao, List<Double> precos, String motorista) {
         
@@ -24,6 +29,7 @@ public class Carona {
         if (precos == null || precos.size() != (rota.size() - 1)) {
             throw new IllegalArgumentException("Quantidade de preços incompatível com a rota");
         }
+        
 
         this.id = UUID.randomUUID().toString();
         this.rota = new ArrayList<>(rota);
@@ -36,13 +42,14 @@ public class Carona {
         this.ativaOuNao = ativaOuNao;
     }
 
+    //gera os trechos individuais com base na lista de cidades passada pelo motorista
     private List<Trecho> gerarTrechos(List<Cidades> rotaCidades, List<Double> precos, int vagas, String data) {
-        List<Trecho> lista = new ArrayList<>();
-        for (int i = 0; i < rotaCidades.size() - 1; i++) {
-            Cidades origem = rotaCidades.get(i);
-            Cidades destino = rotaCidades.get(i + 1);
-            double precoDoTrecho = precos.get(i);
-
+        List<Trecho> lista = new ArrayList<>();//novo array vazio
+        for (int i = 0; i < rotaCidades.size() - 1; i++) {//itera o num de cidades
+            Cidades origem = rotaCidades.get(i);//pega a origem
+            Cidades destino = rotaCidades.get(i + 1);//pega o destino
+            double precoDoTrecho = precos.get(i);//associa o preço
+            
             lista.add(new Trecho(this.id, data, origem, destino, vagas, precoDoTrecho, this.motorista));
         }
         return lista;
@@ -104,4 +111,14 @@ public class Carona {
     public void setPrecoPorTrecho(List<Double> precoPorTrecho) {
         this.precoPorTrecho = precoPorTrecho;
     }
+
+    public String getMotorista() {
+        return motorista;
+    }
+
+    public void setMotorista(String motorista) {
+        this.motorista = motorista;
+    }
+
+
 }

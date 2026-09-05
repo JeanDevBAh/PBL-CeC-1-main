@@ -1,0 +1,17 @@
+model/Cidades.class
+model/Itinerario.class
+model/Usuario.class
+model/Carona.class
+network/DTOResponse.class
+model/Trecho.class
+server/ClientHandler.class
+model/TipoUser.class
+controller/UserService.class
+model/Grafo.class
+controller/CaronaService.class
+network/JsonUtil.class
+server/ServidorTCP.class
+network/DTORequest.class
+controller/GegenciarGeral.class
+controller/ReservaService.class
+model/Reserva.class

@@ -1,0 +1,39 @@
+package server;
+
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+
+import controller.GegenciarGeral;
+
+public class ServidorTCP {
+    
+    // Porta onde o servidor vai escutar as conexões (você pode alterar se precisar)
+    private static final int PORTA = 8080;
+    
+
+    public static void main(String[] args) {
+        System.out.println("[SERVER] Iniciando o Servidor VaiJunto...");
+
+        GegenciarGeral gerenciador = new GegenciarGeral();
+
+        // Abre o ServerSocket na porta definida
+        try (ServerSocket serverSocket = new ServerSocket(PORTA)) {
+            System.out.println("[SERVER] Servidor rodando com sucesso e escutando na porta " + PORTA + ".");
+
+            // Laço infinito para manter o servidor sempre aberto aceitando novos clientes
+            while (true) {
+                // O accept() pausa a execução e aguarda até que um cliente se conecte
+                Socket socketCliente = serverSocket.accept();
+                System.out.println("[SERVER] Novo passageiro/motorista conectado: " + socketCliente.getRemoteSocketAddress());
+
+                // Cria uma nova thread (ClientHandler) para cuidar exclusivamente deste cliente
+                ClientHandler handler = new ClientHandler(socketCliente, gerenciador);
+                new Thread(handler).start();
+            }
+
+        } catch (IOException e) {
+            System.out.println("[SERVER] Erro crítico no Servidor TCP: " + e.getMessage());
+        }
+    }
+}

@@ -1,7 +1,9 @@
 package controller;
 
 import java.util.List;
+import java.util.Map;
 
+import model.Carona;
 import model.Cidades;
 import model.Grafo;
 import model.Itinerario;
@@ -35,6 +37,10 @@ public class GegenciarGeral {
         return userService.logout(token);
     }
 
+    public boolean mudarTipoUsuario(String token, TipoUser tipoUser){
+        return userService.mudaTipoUser(token, tipoUser);
+    }
+
     // ==========================================
     // FLUXOS DE MOTORISTA (Encaminha para o CaronaService)
     // ==========================================
@@ -48,6 +54,17 @@ public class GegenciarGeral {
         
         return caronaService.criarCarona(rota, data, hora, vagasTotais, ativaOuNao, precos,  user.getLogin());
     }
+    public Carona listaCaronas(String token, String motorista){
+        return caronaService.buscaCaronaPorMotorista(token, motorista);
+    }
+    public boolean cancelarCarona(String token, String id){
+        return caronaService.cancelarCarona(token, id);
+    }
+
+    public Map<String, List<String>> consultarPassageiros(String idCarona, String loginMotorista){
+        return caronaService.consultarPassageirosDaCarona(idCarona, loginMotorista);
+    }
+
 
     // ==========================================
     // FLUXOS DE PASSAGEIRO (Encaminha para o ReservaService)
@@ -61,6 +78,7 @@ public class GegenciarGeral {
         if (passageiro == null) {
             throw new SecurityException("Usuário não autenticado.");
         }
+        
         return reservaService.efetuarReserva(passageiro, itinerario);
     }
 
@@ -71,5 +89,7 @@ public class GegenciarGeral {
         }
         return reservaService.cancelarReserva(idReserva, passageiro.getLogin());
     }
+
+   
 
 }

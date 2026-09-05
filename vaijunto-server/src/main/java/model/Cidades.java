@@ -1,5 +1,9 @@
 package model;
 
+/**
+ * Enum das cidades disponiveis que serão vertices do grafo a ser criado
+ * O tahiti é proibido de ser acessado 
+ */
 public enum Cidades {//cidades baseadas no jogo RDR2
     VALENTINE("Valentine", true),
     RHODES("Rhodes", true),
@@ -42,6 +46,21 @@ public enum Cidades {//cidades baseadas no jogo RDR2
     @Override
     public String toString() {
         return nome;
+    }
+    // Adicione no final do arquivo Cidades.java
+    public static Cidades fromString(String texto) {
+        if (texto == null || texto.trim().isEmpty()) {
+            return null;
+        }
+        
+        for (Cidades cidade : Cidades.values()) {
+            // Compara ignorando maiúsculas/minúsculas. 
+            // Aceita tanto "SAINT_DENIS" (nome da constante) quanto "Saint Denis" (atributo nome)
+            if (cidade.name().equalsIgnoreCase(texto) || cidade.getNome().equalsIgnoreCase(texto)) {
+                return cidade;
+            }
+        }
+        throw new IllegalArgumentException("Cidade inválida ou não reconhecida: " + texto);
     }
     
 }

@@ -3,7 +3,9 @@ package model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
+/**
+ * Itinerario tem os trechos das viagens que ficam disponiveis pela busca
+ */
 public class Itinerario {
     private final List<Trecho> trechos;
     private final double precoTotal;
@@ -16,6 +18,7 @@ public class Itinerario {
         this.precoTotal = calcularPrecoTotal();
     }
 
+    
     private double calcularPrecoTotal() {
         double total = 0.0;
         for (Trecho t : this.trechos) {

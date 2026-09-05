@@ -1,31 +1,35 @@
 package model;
 
 import java.util.*;
-
+/**
+ * Grafo será a representação do mapa onde os vertices são as cidades e os 
+ * trechos as arestas direcionadas
+ */
 public class Grafo {
-
+    //Map armazena dados em pare de chave e valor, permitindo apenas chaves unicas sem repetição
     private final Map<Cidades, List<Trecho>> arestas;
 
     public Grafo() {
-        this.arestas = new HashMap<>();
-        for (Cidades cidade : Cidades.values()) {
+        this.arestas = new HashMap<>();//tabela hash com chave e valor
+        for (Cidades cidade : Cidades.values()) {//adiciona por padrão todas as cidades do enum como chaves
             arestas.put(cidade, new ArrayList<>());
         }
-    }
+    }//O grafo é implementado como uma lista de adjacencias 
 
-    public synchronized void addTrechos(List<Trecho> trechos) {
+    public synchronized void addTrechos(List<Trecho> trechos) {//synchronized impede multiplas threads de acessar o metodo
         for (Trecho t : trechos) {
             arestas.get(t.getCidadeOrigem()).add(t);
         }
     }
-
+    //remove trechos da carona caso o id seja o mesmo
     public synchronized void removeTrechosDaCarona(String caronaId) {
         for (List<Trecho> lista : arestas.values()) {
             lista.removeIf(t -> t.getCaronaId().equals(caronaId));
         }
     }
 
-    public synchronized List<Itinerario> buscarItinerarios(Cidades origem, Cidades destino, String dataDesejada) {
+    //retorna a lista de itinerarios disponiveis para o cliente
+    public List<Itinerario> buscarItinerarios(Cidades origem, Cidades destino, String dataDesejada) {
         List<Itinerario> resultado = new ArrayList<>();
 
         // Validações de entrada: nulos, origem == destino e cidades bloqueadas (ex: Tahiti)
@@ -37,7 +41,7 @@ public class Grafo {
         }
         
         List<Trecho> caminhoAtual = new ArrayList<>();
-        Set<Cidades> cidadesVisitadas = new HashSet<>();
+        Set<Cidades> cidadesVisitadas = new HashSet<>();//hashset para inserir cidades visitadas pois ele so admite valores diferentes
 
         cidadesVisitadas.add(origem);
         buscaCaminhoDFS(origem, destino, dataDesejada, cidadesVisitadas, caminhoAtual, resultado);
@@ -48,8 +52,8 @@ public class Grafo {
     private void buscaCaminhoDFS(Cidades atual, Cidades destino, String dataDesejada,
                                  Set<Cidades> visitadas, List<Trecho> caminhoAtual, 
                                  List<Itinerario> resultado) {
-        if (atual == destino) {
-            resultado.add(new Itinerario(new ArrayList<>(caminhoAtual)));
+        if (atual == destino) {//achamos a rota valida
+            resultado.add(new Itinerario(new ArrayList<>(caminhoAtual)));//salva o itinerario com o caminho achado
             return;
         }      
         
