@@ -27,7 +27,9 @@ public class CaronaService {
                   int vagasTotais, boolean ativaOuNao, List<Double> precos, String motorista){
         Carona carona = new Carona(rota, data, hora, vagasTotais, ativaOuNao, precos, motorista);
         caronas.put(carona.getId(), carona);
-        grafo.addTrechos(carona.getTrechos());
+        if (carona.isAtivaOuNao()) {
+            grafo.addTrechos(carona.getTrechos());
+        }
         return carona.getId();
     }
 
@@ -67,12 +69,13 @@ public class CaronaService {
         return mapaPassageiros;
     }
 
-    public boolean cancelarCarona(String token, String id){
-        if (token == null||id==null) {
+    public boolean cancelarCarona(String id, String loginMotorista){
+        if (id == null || loginMotorista == null || loginMotorista.isBlank()) {
             return false;
         }
         Carona carona = caronas.get(id);
-        if (carona!=null) {
+        if (carona != null && carona.isAtivaOuNao()
+                && loginMotorista.equals(carona.getNomeMotorista())) {
             carona.setAtivaOuNao(false);
             grafo.removeTrechosDaCarona(id);
             caronas.remove(id);

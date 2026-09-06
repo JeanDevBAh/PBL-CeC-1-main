@@ -3,6 +3,8 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;//gera ID randomico
+import java.util.HashSet;
+import java.util.Set;
 
 public class Carona {
     private String id;
@@ -26,20 +28,38 @@ public class Carona {
         if (rota == null || rota.size() < 2) {
             throw new IllegalArgumentException("A rota tem que ter pelo menos 2 cidades");
         }
+        if (data == null || data.isBlank() || hora == null || hora.isBlank()
+                || motorista == null || motorista.isBlank()) {
+            throw new IllegalArgumentException("Data, hora e motorista são obrigatórios");
+        }
+        if (vagasTotais <= 0) {
+            throw new IllegalArgumentException("A quantidade de vagas deve ser maior que zero");
+        }
         if (precos == null || precos.size() != (rota.size() - 1)) {
             throw new IllegalArgumentException("Quantidade de preços incompatível com a rota");
+        }
+        Set<Cidades> cidades = new HashSet<>();
+        for (Cidades cidade : rota) {
+            if (cidade == null || !cidade.isDisponivel() || !cidades.add(cidade)) {
+                throw new IllegalArgumentException("A rota contém cidades inválidas ou repetidas");
+            }
+        }
+        for (Double preco : precos) {
+            if (preco == null || !Double.isFinite(preco) || preco < 0) {
+                throw new IllegalArgumentException("Os preços devem ser números não negativos");
+            }
         }
         
 
         this.id = UUID.randomUUID().toString();
         this.rota = new ArrayList<>(rota);
         this.precoPorTrecho = new ArrayList<>(precos); // Inicializa ANTES de gerar os trechos
-        this.trechos = gerarTrechos(this.rota, this.precoPorTrecho, vagasTotais, data);
         this.data = data;
         this.hora = hora;
         this.motorista = motorista;
         this.vagasTotais = vagasTotais;
         this.ativaOuNao = ativaOuNao;
+        this.trechos = gerarTrechos(this.rota, this.precoPorTrecho, vagasTotais, data);
     }
 
     //gera os trechos individuais com base na lista de cidades passada pelo motorista
