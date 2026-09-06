@@ -5,9 +5,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import com.google.gson.JsonSyntaxException;
 
 import controller.GegenciarGeral;
 import model.Carona;
@@ -41,7 +45,14 @@ public class ClientHandler implements Runnable {
             while ((mensagemRecebida = reader.readLine()) != null) {
                 
                 // 1. Transforma o JSON recebido da rede em um DTORequest Java
-                DTORequest request = JsonUtil.paraObject(mensagemRecebida, DTORequest.class);
+                DTORequest request;
+                try {
+                    request = JsonUtil.paraObject(mensagemRecebida, DTORequest.class);
+                } catch (JsonSyntaxException | NumberFormatException e) {
+                    writer.println(JsonUtil.paraJson(
+                            new DTOResponse<>(false, "JSON inválido: " + e.getMessage())));
+                    continue;
+                }
                 
                 // 2. Processa a requisição (Note o <?> aqui)
                 DTOResponse<?> response = processarRequisicao(request);
@@ -69,7 +80,7 @@ public class ClientHandler implements Runnable {
             return new DTOResponse<>(false, "Requisição inválida ou sem ação definida.");
         }
 
-        switch (request.getAcao().toUpperCase()) {
+        switch (request.getAcao().trim().toUpperCase()) {
             case "PING":
                 return new DTOResponse<>(true, "Pong! Servidor VaiJunto online.");
             case "BUSCAR_VIAGENS":
@@ -109,7 +120,7 @@ public class ClientHandler implements Runnable {
 
 
     private DTOResponse<?> tratarCadastro(DTORequest request){
-        if (request.getLogin() == null || request.getSenha() == null || request.getTipoUser() == null) {
+        if (isBlank(request.getLogin()) || isBlank(request.getSenha()) || request.getTipoUser() == null) {
             return new DTOResponse<>(false, "Dados inválidos: Login, senha e tipo de usuário são obrigatórios.");
         }
 
@@ -128,7 +139,7 @@ public class ClientHandler implements Runnable {
     }
 
     private DTOResponse<?> tratarCancelarCarona(DTORequest request) {
-        if (request.getToken() == null || request.getIdCarona() == null) {
+        if (isBlank(request.getToken()) || isBlank(request.getIdCarona())) {
             return new DTOResponse<>(false, "Token e idCarona são obrigatórios.");
         }
         try {
@@ -142,7 +153,7 @@ public class ClientHandler implements Runnable {
     }
 
     private DTOResponse<?> tratarMinhasCaronas(DTORequest request) {
-        if (request.getToken() == null) {
+        if (isBlank(request.getToken())) {
             return new DTOResponse<>(false, "Token é obrigatório.");
         }
         try {
@@ -154,7 +165,7 @@ public class ClientHandler implements Runnable {
     }
 
     private DTOResponse<?> tratarMudanca(DTORequest request) {
-        if (request.getToken() == null || request.getTipoUser() == null) {
+        if (isBlank(request.getToken()) || request.getTipoUser() == null) {
             return new DTOResponse<>(false, "Token e tipoUser são obrigatórios.");
         }
         TipoUser tipo;
@@ -168,7 +179,7 @@ public class ClientHandler implements Runnable {
     }
 
     private DTOResponse<?> tratarLogin(DTORequest request){
-        if (request.getLogin() == null || request.getSenha() == null) {
+        if (isBlank(request.getLogin()) || isBlank(request.getSenha())) {
             return new DTOResponse<>(false, "Login e senha são obrigatórios.");
         }
         String token = gegenciador.fazerLogin(request.getLogin(), request.getSenha());
@@ -179,7 +190,8 @@ public class ClientHandler implements Runnable {
     }
 
     private DTOResponse<?> tratarBuscarViagens(DTORequest request){
-        if (request.getOrigem() == null || request.getDestino() == null || request.getData() == null) {
+        if (isBlank(request.getOrigem()) || isBlank(request.getDestino())
+                || !isValidDate(request.getData())) {
             return new DTOResponse<>(false, "Entradas inválidas: Origem, destino e data são obrigatórios.");
         }
         
@@ -215,8 +227,9 @@ public class ClientHandler implements Runnable {
     }
 
     private DTOResponse<?> tratarOfertaCarona(DTORequest request) {
-        if (request.getToken() == null || request.getRota() == null || request.getRota().size() < 2
-                || request.getPrecos() == null || request.getData() == null || request.getHora() == null
+        if (isBlank(request.getToken()) || request.getRota() == null || request.getRota().size() < 2
+                || request.getPrecos() == null || !isValidDate(request.getData())
+                || !isValidTime(request.getHora())
                 || request.getVagas() == null || request.isAtivaOuNao() == null) {
             return new DTOResponse<>(false, "Dados incompletos para oferecer carona.");
         }
@@ -249,7 +262,7 @@ public class ClientHandler implements Runnable {
     }
 
     private DTOResponse<?> tratarCancelarReserva(DTORequest request) {
-        if (request.getToken() == null || request.getIdReserva() == null) {
+        if (isBlank(request.getToken()) || isBlank(request.getIdReserva())) {
             return new DTOResponse<>(false, "Token e idReserva são obrigatórios.");
         }
  
@@ -259,7 +272,7 @@ public class ClientHandler implements Runnable {
     }
 
     private DTOResponse<?> tratarReservar(DTORequest request) {
-        if (request.getToken() == null || request.getIndiceItinerario() == null) {
+        if (isBlank(request.getToken()) || request.getIndiceItinerario() == null) {
             return new DTOResponse<>(false, "Token e indiceItinerario são obrigatórios.");
         }
         if (ultimabusca == null) {
@@ -281,6 +294,34 @@ public class ClientHandler implements Runnable {
             return new DTOResponse<>(true, "Reserva confirmada com sucesso.", idReserva);
         } catch (SecurityException e) {
             return new DTOResponse<>(false, "Usuário não autenticado.");
+        }
+    }
+
+    private static boolean isBlank(String value) {
+        return value == null || value.isBlank();
+    }
+
+    private static boolean isValidDate(String value) {
+        if (isBlank(value)) {
+            return false;
+        }
+        try {
+            LocalDate.parse(value);
+            return true;
+        } catch (java.time.format.DateTimeParseException e) {
+            return false;
+        }
+    }
+
+    private static boolean isValidTime(String value) {
+        if (isBlank(value)) {
+            return false;
+        }
+        try {
+            LocalTime.parse(value);
+            return true;
+        } catch (java.time.format.DateTimeParseException e) {
+            return false;
         }
     }
 }
