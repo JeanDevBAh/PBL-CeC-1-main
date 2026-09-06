@@ -33,15 +33,17 @@ public class CaronaService {
         return carona.getId();
     }
 
-    public Carona buscaCaronaPorMotorista(String id, String motorista){
-        if (id==null){
-            return null;
+    public List<Carona> buscaCaronasPorMotorista(String motorista){
+        List<Carona> resultado = new ArrayList<>();
+        if (motorista == null || motorista.isBlank()) {
+            return resultado;
         }
-        Carona carona = caronas.get(id);
-        if(carona!=null && carona.getNomeMotorista().equals(motorista)){
-            return caronas.get(id);
+        for (Carona carona : caronas.values()) {
+            if (motorista.equals(carona.getNomeMotorista())) {
+                resultado.add(carona);
+            }
         }
-        return null;
+        return resultado;
     }
 
     public Map<String, List<String>> consultarPassageirosDaCarona(String idCarona, String loginMotorista) {

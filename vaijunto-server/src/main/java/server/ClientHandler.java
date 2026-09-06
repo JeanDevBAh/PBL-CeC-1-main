@@ -157,8 +157,8 @@ public class ClientHandler implements Runnable {
             return new DTOResponse<>(false, "Token é obrigatório.");
         }
         try {
-            Carona carona = gegenciador.listaCaronas(request.getToken(), request.getLogin());
-            return new DTOResponse<>(true, "Carona encontrada", carona);
+            List<Carona> caronas = gegenciador.listaCaronas(request.getToken());
+            return new DTOResponse<>(true, "Caronas encontradas", caronas);
         } catch (SecurityException e) {
             return new DTOResponse<>(false, "Usuário não autenticado.");
         }

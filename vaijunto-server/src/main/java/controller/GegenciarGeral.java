@@ -54,8 +54,12 @@ public class GegenciarGeral {
         
         return caronaService.criarCarona(rota, data, hora, vagasTotais, ativaOuNao, precos,  user.getLogin());
     }
-    public Carona listaCaronas(String token, String motorista){
-        return caronaService.buscaCaronaPorMotorista(token, motorista);
+    public List<Carona> listaCaronas(String token){
+        Usuario motorista = userService.validarSessao(token);
+        if (motorista == null) {
+            throw new SecurityException("Usuário não autenticado.");
+        }
+        return caronaService.buscaCaronasPorMotorista(motorista.getLogin());
     }
     public boolean cancelarCarona(String token, String id){
         Usuario motorista = userService.validarSessao(token);
